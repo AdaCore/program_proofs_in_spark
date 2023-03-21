@@ -1,6 +1,8 @@
-with SPARK.Big_Integers; use SPARK.Big_Integers;
+with Ada.Numerics.Big_Numbers.Big_Integers; use Ada.Numerics.Big_Numbers.Big_Integers;
 
 package Unary_Numbers is
+
+   function Big (X : Integer) return Big_Integer renames To_Big_Integer;
 
    type Zero_Or_Succ is (Zero, Succ);
 
@@ -21,10 +23,10 @@ package Unary_Numbers is
 
    function To_Int (U : Unary) return Big_Natural is
       (case U.Kind is
-         when Zero => 0,
-         when Succ => 1 + To_Int (U.Minus_One.all))
+         when Zero => Big (0),
+         when Succ => Big (1) + To_Int (U.Minus_One.all))
    with
-     Subprogram_Variant => (Structural => U);
+     Annotate => (GNATprove, Terminating);
 
    function Of_Int (N : Big_Natural) return Unary is
      (if N = 0 then
@@ -32,13 +34,13 @@ package Unary_Numbers is
       else
          Unary'(Kind => Succ, Minus_One => New_Unary (Of_Int (N -1))))
    with
-     Subprogram_Variant => (Decreases => N);
+     Annotate => (GNATprove, Terminating);
 
    procedure Lemma_To_Int_Of_Int (N : Big_Natural)
    with
      Ghost,
-     Subprogram_Variant => (Decreases => N),
-     Post => To_Int (Of_Int (N)) = N;
+     Post => To_Int (Of_Int (N)) = N,
+     Annotate => (GNATprove, Terminating);
 
    -- Of_Int_To_Int cannot be expressed as pointer equality is not allowed.
 
@@ -47,13 +49,13 @@ package Unary_Numbers is
        elsif Y.Kind = Zero then False
        else X.Minus_One.all < Y.Minus_One.all)
    with
-     Subprogram_Variant => (Structural => X);
+     Annotate => (GNATprove, Terminating);
 
    procedure Lemma_Less_Transitive (X, Y : Unary)
    with
      Ghost,
-     Subprogram_Variant => (Structural => X),
-     Post => (X < Y) = (To_Int (X) < To_Int (Y));
+     Post => (X < Y) = (To_Int (X) < To_Int (Y)),
+     Annotate => (GNATprove, Terminating);
 
    function "+" (X, Y : Unary) return Unary is
      (if Y.Kind = Zero then
@@ -61,14 +63,13 @@ package Unary_Numbers is
       else
          Unary'(Kind => Succ, Minus_One => New_Unary(X + Y.Minus_One.all)))
    with
-     Subprogram_Variant => (Structural => Y);
+     Annotate => (GNATprove, Terminating);
 
    procedure Lemma_Add_Correct (X, Y : Unary)
    with
      Ghost,
-     Subprogram_Variant => (Structural => Y),
      Post => To_Int (X + Y) = To_Int (X) + To_Int (Y),
-     Annotate => (GNATprove, Automatic_Instantiation);
+     Annotate => (GNATprove, Terminating);
 
    function "-" (X, Y : Unary) return Unary is
      (if Y.Kind = Zero then
@@ -76,16 +77,15 @@ package Unary_Numbers is
       else
          X.Minus_One.all - Y.Minus_One.all)
    with
-     Subprogram_Variant => (Structural => Y),
-     Pre  => not (X < Y);
+     Pre  => not (X < Y),
+     Annotate => (GNATprove, Terminating);
 
    procedure Lemma_Sub_Correct (X, Y : Unary)
    with
      Ghost,
-     Subprogram_Variant => (Structural => Y),
      Pre  => not (X < Y),
      Post => To_Int (X - Y) = To_Int (X) - To_Int (Y),
-     Annotate => (GNATprove, Automatic_Instantiation);
+     Annotate => (GNATprove, Terminating);
 
    function "*" (X, Y : Unary) return Unary is
      (if X.Kind = Zero then
@@ -93,18 +93,19 @@ package Unary_Numbers is
       else
          Y + (X.Minus_One.all * Y))
    with
-     Subprogram_Variant => (Structural => X);
+     Annotate => (GNATprove, Terminating);
 
    procedure Lemma_Mul_Correct (X, Y : Unary)
    with
      Ghost,
-     Subprogram_Variant => (Structural => X),
      Post => To_Int (X * Y) = To_Int (X) * To_Int (Y),
-     Annotate => (GNATprove, Automatic_Instantiation);
+     Annotate => (GNATprove, Terminating);
 
    procedure Div_Mod (X, Y : Unary; Q, M : out Unary)
    with
-     Subprogram_Variant => (Decreases => To_Int (X)),
+     Annotate => (GNATprove, Terminating),
+     Annotate => (GNATprove, False_Positive, "terminating annotation",
+                  "That version of SPARK does not allow variant on Big_Natural"),
      Pre  => To_Int (Y) /= 0
        and then not Q'Constrained
        and then not M'Constrained,

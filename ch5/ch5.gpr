@@ -1,5 +1,3 @@
-with "sparklib";
-
 project Ch5 is
    package Builder is
       for Global_Configuration_Pragmas use "spark.adc";
