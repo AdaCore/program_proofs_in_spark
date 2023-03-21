@@ -1,7 +1,7 @@
 with "sparklib";
 
-project Ch7 is
+project Ch12 is
    package Builder is
       for Global_Configuration_Pragmas use "spark.adc";
    end Builder;
-end Ch7;
+end Ch12;
