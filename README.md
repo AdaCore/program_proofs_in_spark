@@ -6,7 +6,7 @@ All examples in branch `master` prove at level 2 (using switch `--level=2`) usin
 
 All examples in branch `fsf` prove at level 2 (using switch `--level=2`) using SPARK FSF, that you can download directly or through Alire following the instructions on [the README of the SPARK project](https://github.com/AdaCore/spark2014).
 
-Compare to SPARK Pro 23, the current FSF release does not include yet:
+Compared to SPARK Pro 23, the current FSF release does not include yet:
 
 - structural loop and subprogram variants
 
