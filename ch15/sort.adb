@@ -4,6 +4,7 @@ package body Sort is
    -- We could also remove the contract and let it be inlined for proof.
    procedure Swap (A : in out Nat_Array; X, Y : Index)
    with
+     Pre  => X in A'Range and Y in A'Range,
      Post => A = (A'Old with delta
                          X => A'Old (Y),
                          Y => A'Old (X))
@@ -26,12 +27,12 @@ package body Sort is
    -- Finds the index of the smallest element in the slice A (From .. To)
    function Index_Of_Minimum (A : Nat_Array; From, To : Index) return Index
    with
-     Pre  => To in From .. A'Last,
+     Pre  => From in A'Range and To in From .. A'Last,
      Post => Index_Of_Minimum'Result in From .. To and then
        (for all I in From .. To =>
           A (Index_Of_Minimum'Result) <= A (I))
    is
-      Min : Index := From;
+      Min : Index range A'Range := From;
    begin
       for Index in From .. To loop
          if A (Index) < A (Min) then
@@ -46,11 +47,15 @@ package body Sort is
    end Index_Of_Minimum;
 
    procedure Selection_Sort (A : in out Nat_Array) is
-      Smallest : Index;  -- Index of the smallest value in the unsorted part
+      Smallest : Index range A'Range;  -- Index of the smallest value in the unsorted part
    begin
+      if A'Length = 0 then
+         return;
+      end if;
+
       Permutation := (for J in Index => J);
 
-      for Current in 1 .. A'Last - 1 loop
+      for Current in A'First .. A'Last - 1 loop
          Smallest := Index_Of_Minimum (A, Current, A'Last);
 
          if Smallest /= Current then
@@ -59,7 +64,7 @@ package body Sort is
                   Y => Smallest);
          end if;
 
-         pragma Loop_Invariant (Is_Sorted (A, 1, Current));
+         pragma Loop_Invariant (Is_Sorted (A, A'First, Current));
          pragma Loop_Invariant
            (for all J in Current + 1 .. A'Last =>
               A (Current) <= A (J));
@@ -93,6 +98,7 @@ package body Sort is
           and then Lo < Hi
           and then Split_Point (A, Lo)
           and then Split_Point (A, Hi)
+          and then Same_Bounds (A_Entry, A)
           and then Is_Perm (A_Entry, A),
         Post => P in Lo .. Hi-1
           and then (for all I in Lo .. P-1 => A(I) < A(P))
@@ -139,6 +145,7 @@ package body Sort is
           and then Lo <= Hi
           and then Split_Point (A, Lo)
           and then Split_Point (A, Hi)
+          and then Same_Bounds (A_Entry, A)
           and then Is_Perm (A_Entry, A),
         Post =>
           (Lo = Hi or else Is_Sorted (A, From => Lo, To => Hi-1))
@@ -159,6 +166,10 @@ package body Sort is
       end Quicksort_Aux;
 
    begin
+      if A'Length = 0 then
+         return;
+      end if;
+
       Permutation := (for J in Index => J);
 
       Quicksort_Aux (A, A'First, A'Last+1);
