@@ -15,3 +15,25 @@ Compared to SPARK Pro 23, the current FSF release does not include yet:
 - the new organization of SPARKlib
 
 - annotation `Automatic_Instantiation`
+
+If you want to contribute another example, please open a PR with the code, following the organization of existing chapters, with a project file per chapter. Missing examples of interest are:
+
+- the list operation of chapter 6
+
+- insertion sort and merge sort from chapter 8
+
+- the queue of chapter 9
+
+- the priority queue of chapter 10
+
+- the sums of chapter 12
+
+- linear search and binary search of chapter 13
+
+- the array operations of chapter 14
+
+- the objects with invariants of chapter 16
+
+- the objects with dynamic allocation of chapter 17
+
+For many of these, inspiration from similar examples can be found in the examples presented in [the SPARK User's Guide](https://docs.adacore.com/live/wave/spark2014/html/spark2014_ug/index.html).
