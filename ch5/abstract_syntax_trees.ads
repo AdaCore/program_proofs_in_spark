@@ -1,7 +1,7 @@
 -- 5.8 Example: Working on Abstract Syntax Trees
 
-with SPARK.Big_Integers; use SPARK.Big_Integers;
-with SPARK.Containers.Functional.Maps; use SPARK.Containers;
+with Ada.Numerics.Big_Numbers.Big_Integers; use Ada.Numerics.Big_Numbers.Big_Integers;
+with Ada.Containers.Functional_Maps; use Ada.Containers;
 
 package Abstract_Syntax_Trees is
 
@@ -36,7 +36,7 @@ package Abstract_Syntax_Trees is
    function New_Const (Value : Big_Natural) return Expr_Acc is
      (New_Expr (Expr'(Kind => Const, Value => Value)));
 
-   package Environments is new Functional.Maps (String, Big_Natural);
+   package Environments is new Functional_Maps (String, Big_Natural);
    subtype Env is Environments.Map;
 
    function Unit (Op : Oper) return Big_Natural is
@@ -56,12 +56,13 @@ package Abstract_Syntax_Trees is
                   when Add => V0 + V1,
                   when Mul => V0 * V1)))
    with
-     Subprogram_Variant => (Structural => E);
+     Annotate => (GNATprove, Terminating),
+     Annotate => (GNATprove, False_Positive, "terminating annotation",
+                  "That version of SPARK does not allow structural variant");
 
    procedure Lemma_Eval_Unit_Left (Op : Oper; Right : Expr_Acc; Cur : Env)
    with
      Ghost,
-     Annotate => (GNATprove, Automatic_Instantiation),
      Post => Eval (Expr'(Kind  => Node,
                          Op    => Op,
                          Left  => New_Const (Unit (Op)),
@@ -72,7 +73,6 @@ package Abstract_Syntax_Trees is
    procedure Lemma_Eval_Unit_Right (Op : Oper; Left : Expr_Acc; Cur : Env)
    with
      Ghost,
-     Annotate => (GNATprove, Automatic_Instantiation),
      Post => Eval (Expr'(Kind  => Node,
                          Op    => Op,
                          Left  => Left,
@@ -82,7 +82,9 @@ package Abstract_Syntax_Trees is
 
    function Optimize (E : Expr) return Expr
    with
-     Subprogram_Variant => (Structural => E);
+     Annotate => (GNATprove, Terminating),
+     Annotate => (GNATprove, False_Positive, "terminating annotation",
+                  "That version of SPARK does not allow structural variant");
 
    function Optimize (E : Expr) return Expr is
      (case E.Kind is
@@ -103,7 +105,7 @@ package Abstract_Syntax_Trees is
    procedure Lemma_Optimize_Correct (E : Expr; Cur : Env)
    with
      Ghost,
-     Subprogram_Variant => (Structural => E),
-     Post => Eval (Optimize (E), Cur) = Eval (E, Cur);
+     Post => Eval (Optimize (E), Cur) = Eval (E, Cur),
+     Annotate => (GNATprove, Terminating);
 
 end Abstract_Syntax_Trees;
