@@ -9,3 +9,6 @@ licenses = "Apache-2.0"
 website = "https://github.com/AdaCore/program_proofs_in_spark"
 project-files = ["ch5/ch5.gpr", "ch7/ch7.gpr", "ch12/ch12.gpr", "ch13/ch13.gpr", "ch15/ch15.gpr"]
 tags = ["spark"]
+
+[[depends-on]]
+gnat = ">=12 & <2000"
