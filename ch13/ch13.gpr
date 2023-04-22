@@ -1,9 +1,10 @@
 project Ch13 is
 
+   for Main use ("test_search.adb");
    for Object_Dir use "obj";
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-g", "-O0");
+      for Default_Switches ("Ada") use ("-g", "-O0", "-gnata");
    end Compiler;
 
    package Builder is
