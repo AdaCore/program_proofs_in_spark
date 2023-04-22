@@ -12,3 +12,6 @@ tags = ["spark"]
 
 [[depends-on]]
 gnat = ">=12 & <2000"
+
+[[depends-on]]
+gnatprove = "^12.1.1"
