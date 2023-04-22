@@ -41,6 +41,7 @@ package body Search is
          pragma Loop_Invariant
            (for all I in A'Range => (for all J in B'Range =>
               D <= Dist (A(I), B(J)) or (M <= I and N <= J)));
+         pragma Loop_Variant (Increases => M, Increases => N);
 
          D := Value'Min (D, Dist (A(M), B(N)));
          if A(M) < B(N) then

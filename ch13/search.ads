@@ -33,7 +33,7 @@ package Search is
 
    function Is_Sorted (A : Arr) return Boolean is
      (for all I1 in A'Range => (for all I2 in A'Range =>
-        (if I1 <= I2 then  A(I1) <= A(I2))));
+        (if I1 <= I2 then A(I1) <= A(I2))));
 
    function Canyon_Search (A, B : Arr) return Value
    with
