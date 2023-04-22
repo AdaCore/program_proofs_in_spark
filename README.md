@@ -16,6 +16,20 @@ Compared to SPARK Pro 23, the current FSF release does not include yet:
 
 - annotation `Automatic_Instantiation`
 
+This project is also distributed as an Alire crate. To download the crate and install SPARK FSF, just [install Alire](https://alire.ada.dev/docs/#installation) first, then run:
+
+```
+alr get program_proofs_in_spark
+cd program_proofs_in_spark_...
+alr with gnatprove
+```
+
+Then you can edit each project in the correct environment for compiling and proving it using:
+
+```
+alr edit --project=ch??/ch??.gpr
+```
+
 If you want to contribute another example, please open a PR with the code, following the organization of existing chapters, with a project file per chapter. Missing examples of interest are:
 
 - the list operation of chapter 6
