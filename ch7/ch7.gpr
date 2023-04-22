@@ -1,5 +1,17 @@
 project Ch7 is
+
+   for Object_Dir use "obj";
+
+   package Compiler is
+      for Default_Switches ("Ada") use ("-g", "-O0");
+   end Compiler;
+
    package Builder is
       for Global_Configuration_Pragmas use "spark.adc";
    end Builder;
+
+   package Prove is
+      for Proof_Switches("Ada") use ("-j0", "--level=2");
+   end Prove;
+
 end Ch7;
