@@ -6,8 +6,8 @@ package body Sort is
    with
      Pre  => X in A'Range and Y in A'Range,
      Post => A = (A'Old with delta
-                         X => A'Old (Y),
-                         Y => A'Old (X))
+                    X => A'Old (Y),
+                    Y => A'Old (X))
        and then Permutation = (Permutation'Old with delta
                                  X => Permutation'Old (Y),
                                  Y => Permutation'Old (X))
